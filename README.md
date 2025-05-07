@@ -2,19 +2,20 @@
 
 ✨ **Tools & Technologies Used:**
 
-![Airflow](https://airflow.apache.org/images/airflow_logo.png) **Apache Airflow**: Workflow orchestration
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFzCIuPsPokbP-V0RFFgCRJqcve5gpjJmTtg&s" alt="Airflow" width="40" height="40"/> **Apache Airflow**: Workflow orchestration  
 
-![Kafka](https://kafka.apache.org/images/logo.svg) **Apache Kafka**: Real-time data streaming
+<img src="https://www.svgrepo.com/show/353950/kafka.svg" alt="Kafka" width="40" height="40"/> **Apache Kafka**: Real-time data streaming  
 
-![Spark](https://spark.apache.org/images/spark-logo-trademark.png) **Apache Spark (Structured Streaming)**: Data processing and transformation
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Apache_Spark_logo.svg/1200px-Apache_Spark_logo.svg.png" alt="Spark" width="40" height="40"/> **Apache Spark (Structured Streaming)**: Data processing and transformation  
 
-![Cassandra](https://cassandra.apache.org/img/cassandra_logo.png) **Apache Cassandra**: NoSQL database for storage
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Cassandra_logo.svg/2560px-Cassandra_logo.svg.png" alt="Cassandra" width="40" height="40"/> **Apache Cassandra**: NoSQL database for storage  
 
-![Docker](https://www.docker.com/sites/default/files/d8/2019-07/Moby-logo.png) **Docker & Docker Compose**: Containerization for seamless deployment
+<img src="https://static-00.iconduck.com/assets.00/docker-icon-2048x1753-uguk29a7.png" alt="Docker" width="40" height="40"/> **Docker & Docker Compose**: Containerization for seamless deployment  
 
-![Python](https://www.python.org/static/community_logos/python-logo.png) **Python**: Scripting and data processing
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/1869px-Python-logo-notext.svg.png" alt="Python" width="40" height="40"/> **Python**: Scripting and data processing  
 
-🌐 **REST API**: Source of random name data
+<img src="https://cdn-icons-png.flaticon.com/512/8681/8681370.png" alt="API" width="40" height="40"/> **Random Name API**: Source of random name data  
+
 
 ---
 
@@ -26,16 +27,29 @@ This project is a fully containerized, real-time data streaming and processing p
 
 ```mermaid
 graph TD
-    API[🌐 Random Name API] --> |Fetch Data| Python[![Python](https://www.python.org/static/community_logos/python-logo.png)]
+    API([🌐 Random Name API]) --> |🔄 Fetch Data| Python([🐍 Python Application])
 
     subgraph Docker
-        Airflow[![Airflow](https://airflow.apache.org/images/airflow_logo.png)] <--> Python
-        Python <--> |Streaming| Kafka[![Kafka](https://kafka.apache.org/images/logo.svg)]
-        Kafka <--> |Streaming| Spark[![Spark](https://spark.apache.org/images/spark-logo-trademark.png)]
-        Spark --> |Batch Write| Cassandra[![Cassandra](https://cassandra.apache.org/img/cassandra_logo.png)]
+
+        Airflow([Apache Airflow]) <--> |🔄 Schedule Jobs| Python
+        Python <--> |🔄 Stream Data| Kafka([Apache Kafka])
+        Kafka <--> |🔄 Stream Data| Spark([Apache Spark])
+        Spark --> |📝 Write Data| Cassandra([Apache Cassandra])
     end
 
-    Docker[![Docker](https://www.docker.com/sites/default/files/d8/2019-07/Moby-logo.png)] --> Airflow
+    Docker --> Airflow
+    Docker --> Kafka
+    Docker --> Spark
+    Docker --> Cassandra
+
+    subgraph Docker
+        Airflow[Apache Airflow] <--> Python
+        Python <--> |Streaming| Kafka[Apache Kafka]
+        Kafka <--> |Streaming| Spark[Apache Spark]
+        Spark --> |Batch Write| Cassandra[Apache Cassandra]
+    end
+
+    Docker --> Airflow
     Docker --> Kafka
     Docker --> Spark
     Docker --> Cassandra
@@ -65,7 +79,7 @@ graph TD
 ### 🐳 Step 1: Clone the Repository
 
 ```bash
-git clone <repository_url>
+git clone https://github.com/mahdimirmojarabian/real-time-data-pipeline-airflow-kafka-spark-cassandra-docker.git
 ```
 
 ### 🐋 Step 2: Docker Configuration
