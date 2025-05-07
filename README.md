@@ -2,13 +2,19 @@
 
 ✨ **Tools & Technologies Used:**
 
-* 🪂 **Apache Airflow**: Workflow orchestration
-* 🐘 **Apache Kafka**: Real-time data streaming
-* 🔥 **Apache Spark (Structured Streaming)**: Data processing and transformation
-* 🗃️ **Apache Cassandra**: NoSQL database for storage
-* 🐳 **Docker & Docker Compose**: Containerization for seamless deployment
-* 🐍 **Python**: Scripting and data processing
-* 🌐 **REST API**: Source of random name data
+![Airflow](https://airflow.apache.org/images/airflow_logo.png) **Apache Airflow**: Workflow orchestration
+
+![Kafka](https://kafka.apache.org/images/logo.svg) **Apache Kafka**: Real-time data streaming
+
+![Spark](https://spark.apache.org/images/spark-logo-trademark.png) **Apache Spark (Structured Streaming)**: Data processing and transformation
+
+![Cassandra](https://cassandra.apache.org/img/cassandra_logo.png) **Apache Cassandra**: NoSQL database for storage
+
+![Docker](https://www.docker.com/sites/default/files/d8/2019-07/Moby-logo.png) **Docker & Docker Compose**: Containerization for seamless deployment
+
+![Python](https://www.python.org/static/community_logos/python-logo.png) **Python**: Scripting and data processing
+
+🌐 **REST API**: Source of random name data
 
 ---
 
@@ -20,30 +26,37 @@ This project is a fully containerized, real-time data streaming and processing p
 
 ```mermaid
 graph TD
-subgraph Docker
-API[🌐 Random Name API] --> Airflow[🪂 Airflow]
-Airflow --> Kafka[🐘 Kafka]
-Kafka --> Spark[🔥 Spark]
-Spark --> Cassandra[🗃️ Cassandra]
-end
+    API[🌐 Random Name API] --> |Fetch Data| Python[![Python](https://www.python.org/static/community_logos/python-logo.png)]
+
+    subgraph Docker
+        Airflow[![Airflow](https://airflow.apache.org/images/airflow_logo.png)] <--> Python
+        Python <--> |Streaming| Kafka[![Kafka](https://kafka.apache.org/images/logo.svg)]
+        Kafka <--> |Streaming| Spark[![Spark](https://spark.apache.org/images/spark-logo-trademark.png)]
+        Spark --> |Batch Write| Cassandra[![Cassandra](https://cassandra.apache.org/img/cassandra_logo.png)]
+    end
+
+    Docker[![Docker](https://www.docker.com/sites/default/files/d8/2019-07/Moby-logo.png)] --> Airflow
+    Docker --> Kafka
+    Docker --> Spark
+    Docker --> Cassandra
 ```
 
 ---
 
 ## 📌 How It Works
 
-1. **🪂 Apache Airflow** triggers a script every 10 seconds to fetch data from an external random names API.
-2. The data is then published to a **🐘 Apache Kafka** topic (`random_names`).
-3. **🔥 Apache Spark** (Structured Streaming) consumes messages from Kafka, processes them, and writes the results to **🗃️ Apache Cassandra**.
+1. **Apache Airflow** triggers a script every 10 seconds to fetch data from an external random names API.
+2. The data is then published to an **Apache Kafka** topic (`random_names`).
+3. **Apache Spark** (Structured Streaming) consumes messages from Kafka, processes them, and writes the results to **Apache Cassandra**.
 
 ---
 
 ## 📂 Project Files
 
-* `stream_to_kafka_dag.py`: 🪂 Airflow DAG script for scheduling API data fetch every 10 seconds.
-* `stream_to_kafka.py`: 🌐 Fetches data from the API and sends it to 🐘 Kafka.
-* `spark_streaming.py`: 🔥 Consumes data from 🐘 Kafka with Spark and writes to 🗃️ Cassandra.
-* `response.json`: 🌐 Sample API response.
+* `stream_to_kafka_dag.py`: Airflow DAG script for scheduling API data fetch every 10 seconds.
+* `stream_to_kafka.py`: Fetches data from the API and sends it to Kafka.
+* `spark_streaming.py`: Consumes data from Kafka with Spark and writes to Cassandra.
+* `response.json`: Sample API response.
 
 ---
 
@@ -161,25 +174,3 @@ spark-submit --master local[2] \
 Data from Kafka will now be continuously written to Cassandra.
 
 ---
-
-## 🎨 Pipeline Flow Diagram
-
-```mermaid
-graph TD
-subgraph Docker
-subgraph Airflow
-A1[🌐 Fetch API Data Every 10 sec] --> A2[🐘 Send Data to Kafka]
-end
-subgraph Kafka Cluster
-K[🐘 Kafka Topic: random_names]
-end
-subgraph Spark
-S[🔥 Consume from Kafka & Process Data] --> C[🗃️ Write Data to Cassandra]
-end
-end
-
-API --> A1
-A2 --> K
-K --> S
-S --> C
-```
